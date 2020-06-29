@@ -3,7 +3,7 @@ typedef int Rank;          //秩
 
 template <typename T>
 class Vector
-{ //向量模板类
+{ //向量模板类，在线修改
 protected:
     Rank _size;
     int _capacity;
