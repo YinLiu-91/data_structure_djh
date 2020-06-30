@@ -10,7 +10,9 @@ protected:
     T *_elem; //规模，容量，数据区
 
     void copyFrom(T const *A, Rank lo, Rank hi); //复制数组区间
-    void expand();                               //空间不足时扩容
+    //@sdfs
+    void expand();                               ///空间不足时扩容@sdfs
+    
     void shrink();                               //装填因子过小时压缩
     bool bubble(Rank lo, Rank hi);               //扫描交换
     void bubblesort(Rank lo, Rank hi);           //起泡排序算法
@@ -49,7 +51,7 @@ public:
     Rank search(T const &e, Rank lo, Rank hi) const; //有序向量区间查找
     //可写访问接口
     T &operator[](Rank r) const;                         //重载下标操作符,可以类似于素组形式引用元素
-    Vector<T> &operator=(Vector<T> const &);             //重载赋值操作运算符，以便直接克隆向量
+    Vector<T> &operator=(  Vector<T>const  &);             //重载赋值操作运算符，以便直接克隆向量
     T remove(Rank r);                                    //删除秩为r的元素
     int remove(Rank lo, Rank hi);                        //删除区间内元素
     Rank insert(Rank r, T const &e);                     //插入元素
