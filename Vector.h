@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-06-29 22:43:46
+ * @LastEditTime: 2020-07-01 19:47:49
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \code\Vector.h
+ */ 
 typedef int Rank;          //秩
 #define DEFAULT_CAPACITY 3 //默认的初始容量
 
@@ -43,7 +51,7 @@ public:
     bool empty() const { return !_size; }                     //判空
     int disordered() const;                                   //判断向量是否已经排序
     Rank find(T const &e) const { return find(e, 0, _size); } //无须向量整体查找
-    Rank find(T const, Rank lo, Rank hi) const;               //无须向量区间查找
+    Rank find(T const&, Rank lo, Rank hi) const;               //无须向量区间查找
     Rank search(T const &e) const                             //有序向量整体查找
     {
         return (0 >= _size) ? -1 : search(e, 0, _size);

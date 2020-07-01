@@ -1,3 +1,12 @@
+
+/*
+ * @Author: your name
+ * @Date: 2020-06-29 20:51:34
+ * @LastEditTime: 2020-07-01 21:15:34
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \code\Vector.cpp
+ */
 #include "Vector.h"
 #include <numeric>
 template <typename T>
@@ -80,5 +89,101 @@ static bool lt(T &b, T &b) { return a < b; }; //less than
 template <typename T>
 static bool eq(T *a, T *b) { return eq(*a, *b); } //equal
 template <typename T>
-static bool eq(T &a, T &b) { return a==b; } //equal
- 
+static bool eq(T &a, T &b) { return a == b; } //equal
+
+//2020.07.01 无序查找
+template <typename T>
+Rank Vector<T>::find(T const &e, Rank lo, Rank hi) const
+{                                          //assert :0<=lo<hi<=_size
+    while ((lo < hi--) && (e != _elem[i])) //这里是<不是<=
+        ;                                  //从后向前，顺序查找
+    return hi;
+}
+
+template <typename T>
+Rank Vector<T>::insert(Rank r, T const &e)
+{
+    expand(); //若有必要，扩容
+    for (int i = _size; i > r; i--)
+        _elem[i] = _elem[i - 1]; //自后向前，后继元素顺次移位
+    _elem[r] = e;
+    return r;
+}
+
+template <typename T>
+int Vector<T>::remove(Rank lo, Rank)
+{
+    if (lo == hi)
+        return 0; //出于效率考虑，单独处理退化情况，比如remove(0,0)
+    while (hi < _size)
+        _elem[lo++] = elem[hi++]; //[hi,_size]顺次前移ni-lo个元素
+    _size = lo;                   //更新规模，丢弃[lo,_size=hi]的区间
+    shrink();                     //若有必要，则缩小容
+    return hi - lo;
+}
+template <typename T>
+T Vector<T>::remove(Rank r)
+{                     //删除向量中秩为r的元素，0<=r<size
+    T e = _elem[r];   //备份被删除元素
+    remove(r, r + 1); //调用删除区间算法
+    return e;
+}
+
+template <typename T>
+int Vector<T>::deduplicate()
+{
+    //删除无序向量中重复的元素(高效版)
+    int oldSize = _size;                              //记录原始规模
+    Rank i = 1;                                       //从——elem[1]开始
+    while (i < _size)                                 //自前向后逐一考察各元素                                              //在其前缀中寻找与之雷同者（至多一个)
+        (find(_elem[i], 0, i) < 0) ? i++ : remove(i); //若无雷同则继续考察其后继，否则删除雷同者
+    return oldSize - _size;                           //向量规模变化量，即被删除元素总数
+}
+
+//遍历
+template <typename T>
+void Vector<T>::traverse(void (*visit)(T &)) //借助函数指针机制
+{
+    for (int i = 0; i < _size; i++)
+        visit(_elem[i]);
+}
+template <typename T>
+template(typename VST) void Vector<T>::traverse(VST &visit) //借助函数对象机制
+{
+    for (int i = 0; i < _size; i++)
+        visit(_elem[i]);
+} //遍历向量
+
+template <typename T>
+int Vector<T>::disordered() const
+{                                   //返回向量中逆序相邻元素对的总数
+    int n = 0;                      //计数器
+    for (int i = 1; i < _size; ++i) //逐一检查_size-1对相邻元素
+        if (_elem[i - 1] > _elem[i])
+            n++; //逆序则计数
+    return;
+}
+
+/////低效版本有序唯一化方法
+// template <typename T>
+// int Vector<T>::uniquify()
+// { //有序向量重复元素的删除方法
+//     int oldSize = _size;
+//     int i = 1;                                     //当前比对元素的秩,起始于首元素
+//     while (i < _size)                              //从前向后，逐一比对各对相邻元素
+//         _elm[i - 1] == _elem[i] ? remove(i) : i++; //若雷同，则删除后者；否则，转至后一元素
+//     return oldSize - _size;
+// }
+
+////高效版本有序数列唯一化
+template <typename T>
+int Vector<T>::uniquify()
+{                                  //有序向量重复元素剔除算法
+    Rank i = 0, j = 0;             //各对互异“相邻”的元素
+    while (++j < _size)            //逐一扫描，直至末元素
+        if (_elem[i] != _elem[j])  //跳过雷同者
+            _elem[++i] = _elem[j]; //发现不同元素时，向前移至紧邻于前者右侧
+    _size = ++i;
+    shrink();     //直接删除尾部多余元素
+    return j - i; //向量规模变化量，即被删除的元素数量
+}
