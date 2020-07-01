@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-29 20:51:34
- * @LastEditTime: 2020-07-01 21:15:34
+ * @LastEditTime: 2020-07-01 21:40:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\Vector.cpp
@@ -31,11 +31,11 @@ void Vector<T>::copyFrom(T const *A, Rank lo, Rank hi)
 template <typename T>
 void Vector<T>::expand() //在每次insert前都要调用该算法
 {
-    if (_size < _capacity)
+    if (_size < _capacity) //_size小于_capacity不增大容量
         return;
     if (_capacity < DEFAULT_CAPACITY)
         _capacity = DEFAULT_CAPACITY;
-    T *oldElem = _elem;
+    T *oldElem = _elem;             //保留旧向量的指针
     _elem = new T[_capacity <<= 1]; //容量加倍
     for (int i = 0; i < _size; ++i)
         _elem[i] = oldElem[i];
@@ -48,10 +48,10 @@ void Vector<T>::shrink()
 {
     //装填因子过小时压缩向量所占用空间
     if (_capacity < DEFAULT_CAPACITY << 1)
-        return; //不致收缩到默认值以下
-    if (_size << 2 > _capacity)
-        return; //以%25为界
-    T *oldElem = _elem;
+        return;                     //不致收缩到默认值以下
+    if (_size << 2 > _capacity)     //左移动两位相当于*4
+        return;                     //以%25为界
+    T *oldElem = _elem;             //此时容量必然小于25%，容量可以减半
     _elem = new T[_capacity >>= 1]; //容量减半
     for (int i = 0; i < _size; ++i)
         _elem[i] = oldElem[i]; //复制原向量内容
@@ -97,6 +97,7 @@ Rank Vector<T>::find(T const &e, Rank lo, Rank hi) const
 {                                          //assert :0<=lo<hi<=_size
     while ((lo < hi--) && (e != _elem[i])) //这里是<不是<=
         ;                                  //从后向前，顺序查找
+    //比如2<3--,此时hi=2；比对不成功，判断2<2不成功，但是hi仍会--，此时hi比lo小1
     return hi;
 }
 
@@ -111,7 +112,7 @@ Rank Vector<T>::insert(Rank r, T const &e)
 }
 
 template <typename T>
-int Vector<T>::remove(Rank lo, Rank)
+int Vector<T>::remove(Rank lo, Rank hi)
 {
     if (lo == hi)
         return 0; //出于效率考虑，单独处理退化情况，比如remove(0,0)
@@ -119,7 +120,7 @@ int Vector<T>::remove(Rank lo, Rank)
         _elem[lo++] = elem[hi++]; //[hi,_size]顺次前移ni-lo个元素
     _size = lo;                   //更新规模，丢弃[lo,_size=hi]的区间
     shrink();                     //若有必要，则缩小容
-    return hi - lo;
+    return hi - lo;//lo大小虽变，但是与hi同变
 }
 template <typename T>
 T Vector<T>::remove(Rank r)
