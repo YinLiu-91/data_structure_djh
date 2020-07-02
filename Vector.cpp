@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-29 20:51:34
- * @LastEditTime: 2020-07-01 21:40:41
+ * @LastEditTime: 2020-07-02 21:17:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\Vector.cpp
@@ -120,7 +120,7 @@ int Vector<T>::remove(Rank lo, Rank hi)
         _elem[lo++] = elem[hi++]; //[hi,_size]顺次前移ni-lo个元素
     _size = lo;                   //更新规模，丢弃[lo,_size=hi]的区间
     shrink();                     //若有必要，则缩小容
-    return hi - lo;//lo大小虽变，但是与hi同变
+    return hi - lo;               //lo大小虽变，但是与hi同变
 }
 template <typename T>
 T Vector<T>::remove(Rank r)
@@ -188,3 +188,76 @@ int Vector<T>::uniquify()
     shrink();     //直接删除尾部多余元素
     return j - i; //向量规模变化量，即被删除的元素数量
 }
+
+//2020.07.02
+template <typename T> //在有序向量的区间[lo,hi]内，确定不大于e的最后一个结点的秩
+Rank Vector<T>::search(T const &e, Rank lo, Rank hi) const
+{                         //assert:0<=lo<hi<=_size
+    return (rand() % 2) ? //按各50%的概率随机使用二分查找或fibonacci查找
+               binSearch(_elem, e, lo, hi)
+                        : fibSearch(_elem, e, lo, hi);
+}
+
+// //二分查找版本A：在有序向量的区间[lo,hi]内查找元素e,0<=lo<=hi<=_size
+// template <typename T>
+// static Rank binSearch(T *A, T const &e, Rank lo, Rank hi)
+// {
+//     while (lo < hi) //判断条件
+//     {
+//         //每步迭代可能要做两次比较判断，有三个分支
+//         Rank mi = (lo + hi) >> 1; //以中点为轴点
+//         if (e < A[mi])
+//             hi = mi; //深入前半段[lo,mi)
+//         else if (A[mi] < e)
+//             lo = mi + 1; //深入后半段(mi,hi)继续查找
+//         else
+//             return mi; //在mi处命中
+//     }
+//     return -1;
+// }
+
+#include "Fib.h"
+//Fibnacci查找算法：在有序向量的区间[lo,hi]内查找元素e,0<=lo<=hi<=_size
+template <typename T>
+static Rank fibSearch(T *A, T const &e, Rank lo, Rank hi)
+{
+    Fib fib(hi - lo); //用O(log_phi(n=hi-lo))创建Fib数列
+    while (lo < hi)
+    {
+        //每步迭代可能要做两次比较判断，有三个分支
+        wihle(hi - lo < fib.get()) fib.prev(); //通过向前顺序查找（分摊o(1))-至多
+        Rank mi = lo + fib.get() - 1;          //确定形如Fib(k)-1的轴点
+        if (e < A[mi])
+            hi = mi; //深入前半段[lo,mi)继续查找
+        else if (A[mi] < e)
+            lo = mi + 1; //深入到后半段查找
+        else
+            return mi; //在mi处命中
+    }
+    return -1; //查找失败
+}
+
+// //二分查找版本B,从三分支到二分支
+// template <typename T>
+// static Rank binSearch(T *A, T const &e, Rank lo, Rank hi)
+// {
+//     while (1 < hi - lo)
+//     {                                    //每次迭代仅需要一次比较判断，有两个分支；成功查找***不能***提前终止
+//         Rank mi = (lo + hi) >> 1;        //以中点为轴点
+//         (e < A[mi]) ? hi = mi : lo = mi; //经过比较后确定深入[lo,mi)或[mi,hi)
+//     }                                    //出口时hi=lo+1;查找区间仅含有一个元素A[lo]
+//     return (e == A[lo]) ? lo : -1;       //查找成功返回对应的秩，否则统一返回-1
+// } //有多个元素命中时，不能保证返回秩最大者；查找失败时，简单地返回-1，而不能指示失败位置
+
+//二分查找版本c
+//二分查找版本c
+template <typename T>
+static Rank binSearch(T *A, T const &e, Rank lo, Rank hi)
+{
+    while (lo < hi)
+    {                                        //每步迭代仅需要做一次判断，有两个分支
+        Rank mi = (lo + hi) >> 1;            //以中点为轴点
+        (e < A[mi]) ? hi = mi : lo = mi + 1; //
+    }                                        //成功查找前不能提前终止
+    return --lo;                             //循环结束时，lo为大于e的最小的秩，故lo-1即不大于e的元素的最大秩
+} //有多个元素命中时，总能保证返回秩最大者；查找失败时，能够返回失败的位置
