@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-29 20:51:34
- * @LastEditTime: 2020-07-02 21:17:19
+ * @LastEditTime: 2020-07-04 08:18:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\Vector.cpp
@@ -261,3 +261,33 @@ static Rank binSearch(T *A, T const &e, Rank lo, Rank hi)
     }                                        //成功查找前不能提前终止
     return --lo;                             //循环结束时，lo为大于e的最小的秩，故lo-1即不大于e的元素的最大秩
 } //有多个元素命中时，总能保证返回秩最大者；查找失败时，能够返回失败的位置
+
+template <typne T> //向量归并排序
+void Vector<T>::mergeSort(Rank lo, Rank hi)
+{
+    if (hi - lo < 2)
+        return;             //单元素区间自然有序
+    int mi = (lo + hi) / 2; //以中点为界
+    merSort(lo, mi);
+    mergeSort(mi, hi); //分别排序
+    merge(lo, mi, hi);
+}
+template <typename T> //
+void Vector<T>::merge(Rank lo, Rank mi, Rank hi)
+{
+    T *A = _elem + lo;
+    int lb = mi - lo;
+    T *B = new T[lb]; //前子向量B[0, lb) = _elem[lo, mi)
+    for (Rank i = 0; i < lb; B[i] = A[i++])
+        ;
+    int lc = hi - mi;
+    T *C = _elem + mi; //后子向量C[0, lc) = _elem[mi, hi)
+    for (Rank i = 0, j = 0, k = 0; (j < lb) || (k < lc);)
+    { //将B[j]和C[k]中癿小者续至A末尾
+        if ((j < lb) && (!(k < lc) || (B[j] <= C[k])))
+            A[i++] = B[j++];
+        if ((k < lc) && (!(j < lb) || (C[k] < B[j])))
+            A[i++] = C[k++];
+    }
+    delete[] B; //释放临时空间B
+} //归并后得刡完整癿有序向量[lo, hi)
