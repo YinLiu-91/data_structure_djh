@@ -1,13 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2020-07-04 08:39:50
- * @LastEditTime: 2020-07-04 09:22:45
+ * @LastEditTime: 2020-07-05 11:25:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\List.h
  */
-#include "listNode.h"
 
+//#include _LIST_H_
+#ifndef _LIST_H_
+#define _LIST_H_
+#include "listNode.h"
 template <typename T>
 class List
 { //列表模板类
@@ -71,3 +74,4 @@ public:
     template <typename VST>        //操作器
     void traverse(VST &);          //遍历,依次实施visit操作（函数对象，可全局性修改)
 };
+#endif //_LIST_H_

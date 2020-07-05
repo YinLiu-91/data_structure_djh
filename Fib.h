@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-02 20:46:33
- * @LastEditTime: 2020-07-02 20:46:58
+ * @LastEditTime: 2020-07-05 11:23:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\Fib.h
@@ -14,8 +14,9 @@
  * Copyright (c) 2003-2019. All rights reserved.
  ******************************************************************************************/
 
-#pragma once
 
+#ifndef _FIB_H_
+#define _FIB_H_
 class Fib
 { //Fibonacci数列类
 private:
@@ -42,3 +43,4 @@ public:
         return g;
     } //转至上一Fibonacci项，O(1)时间
 };
+#endif //_FIB_H_
