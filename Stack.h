@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-05 09:15:04
- * @LastEditTime: 2020-07-05 16:10:21
+ * @LastEditTime: 2020-07-11 08:48:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\Stack.h
@@ -29,6 +29,7 @@ public:
    
     T &top() { return (*this)[size() - 1]; } //取顶：直接返回向量的末元素
 };
+#include"Stack_rl.h"
 #endif //_STACK_H_
 
 

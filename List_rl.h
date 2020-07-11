@@ -2,7 +2,7 @@
 /*
  * @Author: LY
  * @Date: 2020-07-04 08:23:01
- * @LastEditTime: 2020-07-05 16:48:05
+ * @LastEditTime: 2020-07-05 17:54:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \code\List.cpp
@@ -310,5 +310,4 @@ void List<T>::mergeSort(ListNodePosi(T) & p, int n)
 
 } //注意：排序后，p依然指向归并后区间的（新）的起点
 
-
- #endif //_LIST_RL_H_
+#endif //_LIST_RL_H_
