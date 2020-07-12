@@ -14,7 +14,7 @@
  ****************************************************/
 #define IsRoot(x)(!(x).parent))
 #define IsLChild(x)(!IsRoot(x)&&(&(x)==(x).parent->lc))
-#define ISRChild(x)(!IsRoot(x)&&(&(x)==(x).parent->rc))
+#define IsRChild(x)(!IsRoot(x)&&(&(x)==(x).parent->rc))
 #define HasParent(x) (!IsRoot(x))
 #define HasLChild(x)((x).lc)
 #define HasRChild(x)((x).rc)
