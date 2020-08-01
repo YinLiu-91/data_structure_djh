@@ -36,5 +36,36 @@ int RedBlack<T>::updateHeight(BinNodePosi(T) x)
 
 } //因同一定义stature(NULL) =-1;故height比黑高度少一，好在不致影响到各种算法中的比较判断
 
-template<typename T>BinNodePosi(T)
+//p231
+template <typename T>
+BinNodePosi(T)
+    RedBlack<T>::insert(const T &e)
+{ //将e插入红黑树
+    BinNodePosi(T) &x = search(e);
+    if (x)
+        return x; //确认目标不存在，（留意对_hotd的设置
+    x = new BinNode<T>(e, _hot, nullptr, nullptr, -1);
+    _size++; //创建红节点：以_hot为父，黑高度-1
+    solveDoubleRed(x);
+    return x ? x : _hot->parent; //经双红修正后，即可返回
+} //无论e是否存在于原树中，返回时总有x->data==e
+
+//p233
+//双红修正,待补充
+template <typename T>
+void RedBlack<T>::solvDoubleRed(BinNodePosi(T) x)
+{ //x当前必为红
+}
+
+//节点删除p234
+template <typename T>
+bool RedBlack<T>::remove(const T &E)
+{
+}
+//p238
+//双黑修正
+template <typename T>
+void RedBlack<T>::solveDoubleBlack(BinNodePosi(T) r)
+{
+}
 #endif
